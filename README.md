@@ -3,15 +3,9 @@ cmv-extract-widget
 
 CMV widget to clip and ship a layer using a geoprocessing tool. This widget is based on the original CMV print widget, and created to provide a basic 'clip and ship' service. 
 
-Usage
------
-1. Zoom to an area of interest. The current extents are used for clipping.
-2. Select the out file format.
-3. Select the layer to be exported. 
-
-Configuration
+![screendump](https://github.com/tr3vorm/tr3vorm.github.io/blob/master/extract-screen.JPG)
+Configuration viewer.config
 -------------
-`viewer.config`
 ```javascript
 extract: {
   include: true,
@@ -30,3 +24,9 @@ extract: {
   }
 }
 ```
+Usage
+-----
+1. Zoom to an area of interest. The current extents are used for clipping.
+2. Select the out file format.
+3. Select the layer to be exported. 
+
