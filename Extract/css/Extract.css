@@ -1,0 +1,71 @@
+.gis_ExtractDijit {
+    width: 100%;
+}
+
+.gis_ExtractDijit .printResult {
+    /*border: 1px solid #CCCCCC;*/
+    height: 28px;
+    margin-bottom: 3px;
+    width: 100%;
+}
+
+.gis_ExtractDijit .printResult .printResultTable {
+    width: 100%;
+}
+
+.gis_ExtractDijit .printResult .bold {
+    font-weight: bold;
+}
+
+.gis_ExtractDijit .esriJobFailed {
+    font-weight: bold;
+    color: red;
+}
+
+.gis_ExtractDijit .esriJobSucceeded {
+    font-weight: bold;
+    color: limegreen;
+}
+
+.gis_ExtractDijit .printResultHover table:hover {
+    background-color: #D4E7F8;
+    cursor: pointer;
+}
+
+.gis_ExtractDijit .buttonActionBar {
+    /*background-color: #F2F2F2;
+    border: 1px solid #CDCDCD;*/
+    padding: 3px 0px 2px 0px;
+    text-align: right;
+    width: 100%;
+}
+
+.gis_ExtractDijit .formContainer {
+    /*border: 1px solid #bbb;*/
+    margin-bottom: -1px;
+    width: 100%;
+}
+
+.gis_ExtractDijit .resultsContainer {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.gis_ExtractDijit .printIcon {
+    background-image: url(../images/print.png);
+    width: 16px;
+    height: 16px;
+}
+
+.gis_ExtractDijit .clearIcon {
+    background-image: url(../images/clear.png);
+    width: 16px;
+    height: 16px;
+}
+
+.gis_ExtractDijit .settingsIcon {
+    background-image: url(../images/settings.png);
+    width: 16px;
+    height: 16px;
+}

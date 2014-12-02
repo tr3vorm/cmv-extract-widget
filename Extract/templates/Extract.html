@@ -1,0 +1,48 @@
+<div class="gis_PrintDijit">
+    <div class="formContainer">
+        <div data-dojo-type="dijit/form/Form" data-dojo-attach-point="extractSettingsFormDijit">
+            <table cellspacing="5" style="width:100%;">
+                <tr>
+                    <td colspan="2">
+                        <strong>Features are clipped to current extents.</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Format:
+                    </td>
+                    <td>
+                        <input type="select" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="name:'format',autoComplete:true,required:true,searchAttr:'name',style:'width:100%;'"
+                        data-dojo-attach-point="formatDijit" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Layer:
+                    </td>
+                    <td>
+                        <input type="select" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="name:'clip',autoComplete:true,required:true,searchAttr:'name',style:'width:100%;'"
+                               data-dojo-attach-point="clipDijit" />
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+    <div class="buttonActionBar">
+        <div data-dojo-type="dijit/form/Button" data-dojo-props="busyLabel:'printing'"
+        data-dojo-attach-event="onClick:extractData" data-dojo-attach-point="extractButtonDijit">
+            Extract
+        </div>
+    </div>
+
+    <div data-dojo-attach-point="extractResultsNode" class="resultsContainer">
+    </div>
+
+    <div data-dojo-attach-point="clearActionBarNode" class="buttonActionBar"
+    style="display:none;padding:0;">
+        <div data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:clearResults">
+            Clear
+        </div>
+    </div>
+</div>
