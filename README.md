@@ -19,9 +19,9 @@ extract: {
   options: {
     map: true,
     extractTaskURL: 'http://sampleserver4.arcgisonline.com/ArcGIS/rest/services/HomelandSecurity/Incident_Data_Extraction/GPServer/Extract%20Data%20Task',
-    defaultLayer: ' Incident Points'
     defaultFeatureFormat: 'Shapefile - SHP - .shp',
     defaultRasterFormat: 'Tagged Image File Format - TIFF - .tif',
+    defaultLayers: [' Incident Points']
   }
 }
 ```

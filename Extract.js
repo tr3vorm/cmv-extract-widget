@@ -39,9 +39,9 @@ define([
         map: null,
         count: 1,
         results: [],
-        defaultLayer: null,
         defaultFeatureFormat: null,
         defaultRasterFormat: null,
+        defaultLayers: null,
         baseClass: 'gis_ExtractDijit',
         extractTaskURL: null,
         extractTask: null,
@@ -148,9 +148,13 @@ define([
             this._clipItems.sort(function (a, b) {
                 return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);
             });
+            if(this.defaultLayers.length == 0) {
+                this.defaultLayers = Layers_to_Clip[0].defaultValue;
+            }
             for (var clipItem in this._clipItems) {
                 if (this._clipItems.hasOwnProperty(clipItem)) {
-                    this._addCheckbox(clipItem);
+                    var checked = this.defaultLayers.indexOf(this._clipItems[clipItem].id)>=0;
+                    this._addCheckbox(clipItem, checked);
                 }
             }
         },
@@ -158,11 +162,11 @@ define([
          * creates a checkbox and sets the event handlers
          * @param {object} setting
          */
-        _addCheckbox: function (clipItem) {
+        _addCheckbox: function (clipItem, checked) {
             var li = domConstruct.create('li', null, this.clipList);
             this._clipItems[clipItem]._checkboxNode = new Checkbox({
                 id: clipItem,
-                checked: false,
+                checked: checked,
                 onChange: lang.hitch(this, (function (clipItem) {
                     return function (checked) {
                         this._clipItems[clipItem].save = checked;
