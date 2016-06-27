@@ -39,8 +39,9 @@ define([
         map: null,
         count: 1,
         results: [],
-        defaultFormat: null,
-        defaultLayer: null,
+        defaultFeatureFormat: null,
+        defaultRasterFormat: null,
+        defaultLayers: null,
         baseClass: 'gis_ExtractDijit',
         extractTaskURL: null,
         extractTask: null,
@@ -78,24 +79,55 @@ define([
                 });
                 return;
             }
-            var formatItems = array.map(Feature_Format[0].choiceList, function (item) {
+            var featureFormatItems = array.map(Feature_Format[0].choiceList, function (item) {
                 return {
                     name: item,
                     id: item
                 };
             });
-            formatItems.sort(function (a, b) {
+            featureFormatItems.sort(function (a, b) {
                 return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);
             });
-            var layout = new Memory({
-                data: formatItems
+            var featureFormatStore = new Memory({
+                data: featureFormatItems
             });
-            this.formatDijit.set('store', layout);
-            if (this.defaultFormat) {
-                this.formatDijit.set('value', this.defaultFormat);
+            this.featureFormatDijit.set('store', featureFormatStore);
+            if (this.defaultFeatureFormat) {
+                this.featureFormatDijit.set('value', this.defaultFeatureFormat);
             } else {
-                this.formatDijit.set('value', Feature_Format[0].defaultValue);
+                this.featureFormatDijit.set('value', Feature_Format[0].defaultValue);
             }
+            
+            // Feature_Format parameter
+            var Raster_Format = array.filter(data.parameters, function (param) {
+                return param.name === 'Raster_Format';
+            });
+            if (Raster_Format.length === 0) {
+                topic.publish('viewer/handleError', {
+                    source: 'Extract',
+                    error: 'Extract service parameters name for templates must be \'Raster_Format\''
+                });
+                return;
+            }
+            var rasterFormatItems = array.map(Raster_Format[0].choiceList, function (item) {
+                return {
+                    name: item,
+                    id: item
+                };
+            });
+            rasterFormatItems.sort(function (a, b) {
+                return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);
+            });
+            var rasterFormatStore = new Memory({
+                data: rasterFormatItems
+            });
+            this.rasterFormatDijit.set('store', rasterFormatStore);
+            if (this.defaultRasterFormat) {
+                this.rasterFormatDijit.set('value', this.defaultRasterFormat);
+            } else {
+                this.rasterFormatDijit.set('value', Raster_Format[0].defaultValue);
+            }
+            
             //Layers_to_Clip parameter
             var Layers_to_Clip = array.filter(data.parameters, function (param) {
                 return param.name === 'Layers_to_Clip';
@@ -116,9 +148,13 @@ define([
             this._clipItems.sort(function (a, b) {
                 return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);
             });
+            if(this.defaultLayers.length == 0) {
+                this.defaultLayers = Layers_to_Clip[0].defaultValue;
+            }
             for (var clipItem in this._clipItems) {
                 if (this._clipItems.hasOwnProperty(clipItem)) {
-                    this._addCheckbox(clipItem);
+                    var checked = this.defaultLayers.indexOf(this._clipItems[clipItem].id)>=0;
+                    this._addCheckbox(clipItem, checked);
                 }
             }
         },
@@ -126,11 +162,11 @@ define([
          * creates a checkbox and sets the event handlers
          * @param {object} setting
          */
-        _addCheckbox: function (clipItem) {
+        _addCheckbox: function (clipItem, checked) {
             var li = domConstruct.create('li', null, this.clipList);
             this._clipItems[clipItem]._checkboxNode = new Checkbox({
                 id: clipItem,
-                checked: false,
+                checked: checked,
                 onChange: lang.hitch(this, (function (clipItem) {
                     return function (checked) {
                         this._clipItems[clipItem].save = checked;
@@ -174,7 +210,8 @@ define([
             var params = {
                 "Layers_to_Clip": clipLayers,
                 "Area_of_Interest": featureSet,
-                "Feature_Format": form.format
+                "Feature_Format": form.featureFormat,
+                "Raster_Format": form.rasterFormat
             };
             var fh = this.extractTask.submitJob(params);
 
