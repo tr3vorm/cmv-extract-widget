@@ -40,7 +40,6 @@ define([
         count: 1,
         results: [],
         defaultFeatureFormat: null,
-        defaultRasterFormat: null,
         defaultLayers: null,
         baseClass: 'gis_ExtractDijit',
         extractTaskURL: null,
@@ -148,12 +147,17 @@ define([
             this._clipItems.sort(function (a, b) {
                 return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);
             });
-            if(this.defaultLayers.length == 0) {
-                this.defaultLayers = Layers_to_Clip[0].defaultValue;
+            if(!this.defaultLayers && this.defaultLayers.length > 0) {
+                if(this.defaultLayer) {
+                    this.defaultLayers = [this.defaultLayer];
+                } else {
+                    this.defaultLayers = Layers_to_Clip[0].defaultValue;
+                }
             }
             for (var clipItem in this._clipItems) {
                 if (this._clipItems.hasOwnProperty(clipItem)) {
                     var checked = this.defaultLayers.indexOf(this._clipItems[clipItem].id)>=0;
+                    this._clipItems[clipItem].save = checked
                     this._addCheckbox(clipItem, checked);
                 }
             }
@@ -188,6 +192,9 @@ define([
                         clipLayers.push(this._clipItems[clipItem].id);
                     }
                 }
+            }
+            if(!clipLayers.length > 0) {
+                alert("Must select a layer");
             }
 
             var featureSet = new FeatureSet();
