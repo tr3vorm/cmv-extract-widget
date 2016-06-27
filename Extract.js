@@ -17,19 +17,20 @@ define([
     'dojo/text!./Extract/templates/Extract.html',
     'dojo/text!./Extract/templates/ExtractResult.html',
     'esri/request',
+    'dijit/form/CheckBox',
 
     'dijit/form/Form',
+    'dijit/form/MultiSelect',
     'dijit/form/FilteringSelect',
     'dijit/form/ValidationTextBox',
     'dijit/form/NumberTextBox',
     'dijit/form/Button',
-    'dijit/form/CheckBox',
     'dijit/ProgressBar',
     'dijit/form/DropDownButton',
     'dijit/TooltipDialog',
     'dijit/form/RadioButton',
     'xstyle/css!./Extract/css/Extract.css'
-], function (declare, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, Geoprocessor, FeatureSet, Graphic, Polygon, Memory, lang, array, topic, Style, domConstruct, domClass, extractTemplate, extractResultTemplate, esriRequest) {
+], function (declare, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, Geoprocessor, FeatureSet, Graphic, Polygon, Memory, lang, array, topic, Style, domConstruct, domClass, extractTemplate, extractResultTemplate, esriRequest, Checkbox) {
 
     // Main extract dijit
     var ExtractDijit = declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
@@ -106,30 +107,52 @@ define([
                 });
                 return;
             }
-            var clipItems = array.map(Layers_to_Clip[0].choiceList, function (item) {
+            this._clipItems = array.map(Layers_to_Clip[0].choiceList, function (item) {
                 return {
                     name: item,
                     id: item
                 };
             });
-            clipItems.sort(function (a, b) {
+            this._clipItems.sort(function (a, b) {
                 return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);
             });
-            var clip = new Memory({
-                data: clipItems
-            });
-            this.clipDijit.set('store', clip);
-            if (this.defaultLayer) {
-                this.clipDijit.set('value', this.defaultLayer);
-            } else {
-                this.clipDijit.set('value', Layers_to_Clip[0].defaultValue);
+            for (var clipItem in this._clipItems) {
+                if (this._clipItems.hasOwnProperty(clipItem)) {
+                    this._addCheckbox(clipItem);
+                }
             }
-
+        },
+        /**
+         * creates a checkbox and sets the event handlers
+         * @param {object} setting
+         */
+        _addCheckbox: function (clipItem) {
+            var li = domConstruct.create('li', null, this.clipList);
+            this._clipItems[clipItem]._checkboxNode = new Checkbox({
+                id: clipItem,
+                checked: false,
+                onChange: lang.hitch(this, (function (clipItem) {
+                    return function (checked) {
+                        this._clipItems[clipItem].save = checked;
+                    };
+                }(clipItem)))
+            });
+            this._clipItems[clipItem]._checkboxNode.placeAt(li);
+            domConstruct.create('label', {
+                innerHTML: this._clipItems[clipItem].name,
+                'for': clipItem
+            }, li);
         },
         extractData: function () {
             var form = this.extractSettingsFormDijit.get('value');
             var clipLayers = [];
-            clipLayers.push(form.clip);
+            for (var clipItem in this._clipItems) {
+                if (this._clipItems.hasOwnProperty(clipItem)) {
+                    if (this._clipItems[clipItem].save) {
+                        clipLayers.push(this._clipItems[clipItem].id);
+                    }
+                }
+            }
 
             var featureSet = new FeatureSet();
             var features = [];
